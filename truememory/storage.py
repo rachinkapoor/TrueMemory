@@ -402,8 +402,8 @@ def bulk_replace_messages(conn: sqlite3.Connection, messages: list[dict]) -> int
 
     conn.executemany(
         """INSERT INTO messages
-           (content, sender, recipient, timestamp, category, modality)
-           VALUES (?, ?, ?, ?, ?, ?)""",
+           (content, sender, recipient, timestamp, category, modality, directive)
+           VALUES (?, ?, ?, ?, ?, ?, ?)""",
         [
             (
                 msg["content"],
@@ -412,6 +412,7 @@ def bulk_replace_messages(conn: sqlite3.Connection, messages: list[dict]) -> int
                 msg.get("timestamp", ""),
                 msg.get("category", ""),
                 msg.get("modality", ""),
+                1 if msg.get("directive") else 0,
             )
             for msg in messages
         ],
@@ -473,7 +474,7 @@ def load_messages_from_file(conn: sqlite3.Connection, json_path: str | Path) -> 
 
 def _row_to_dict(row: tuple) -> dict:
     """Convert a raw row tuple to a message dict."""
-    return {
+    d = {
         "id": row[0],
         "content": row[1],
         "sender": row[2],
@@ -482,9 +483,12 @@ def _row_to_dict(row: tuple) -> dict:
         "category": row[5],
         "modality": row[6],
     }
+    if len(row) > 7:
+        d["directive"] = bool(row[7])
+    return d
 
 
-_SELECT_COLS = "id, content, sender, recipient, timestamp, category, modality"
+_SELECT_COLS = "id, content, sender, recipient, timestamp, category, modality, directive"
 
 
 def get_message(conn: sqlite3.Connection, msg_id: int) -> dict | None:
