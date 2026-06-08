@@ -820,7 +820,7 @@ def truememory_get(memory_id: int) -> str:
     return json.dumps(result, indent=2)
 
 
-@mcp.tool()
+@mcp.tool(meta={"anthropic/alwaysLoad": True})
 @_tracked("tool_forget")
 def truememory_forget(memory_id: int) -> str:
     """Delete a memory by its ID.
