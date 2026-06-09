@@ -4,14 +4,14 @@
 
 ```
 ┌─────────────┐  ┌──────────┐  ┌──────────────┐  ┌──────────┐
-│ Claude Code │  │ Kimi CLI │  │ Hermes Agent │  │ OpenClaw │
-└──────┬──────┘  └────┬─────┘  └──────┬───────┘  └────┬─────┘
-       │              │               │                │
-       ▼              ▼               ▼                ▼
+│ Claude Code │  │ ChatGPT │  │ Kimi CLI │  │ Hermes Agent │
+└──────┬──────┘  └────┬────┘  └────┬─────┘  └──────┬───────┘
+       │              │            │               │
+       ▼              ▼            ▼               ▼
 ┌──────────────────────────────────────────────────────────────┐
 │                    Hook Adapters                              │
-│  claude.py    kimi.py    hermes.py    openclaw.py            │
-│  (JSON)       (TOML)     (YAML)       (JSON5+JS)            │
+│  claude.py    chatgpt.py    kimi.py    hermes.py             │
+│  (JSON)       (JSON)        (TOML)      (YAML)               │
 └──────────────────────────┬───────────────────────────────────┘
                            │
                            ▼
@@ -36,9 +36,9 @@
 
 1. **Recall** (session start): The SessionStart hook searches TrueMemory for relevant memories and injects them as `additionalContext` so the AI has full user context from the start.
 
-2. **Buffer** (during session): The UserPromptSubmit hook (Claude Code only) appends user messages to a per-session buffer file for diagnostics.
+2. **Buffer** (during session): The UserPromptSubmit hook (Claude Code and Codex CLI) appends user messages to a per-session buffer file for diagnostics.
 
-3. **Snapshot** (pre-compact): The PreCompact hook (Claude Code, Kimi) saves a lightweight snapshot of the conversation before context compression.
+3. **Snapshot** (pre-compact): The PreCompact hook (Claude Code, Cursor, Gemini CLI, Kimi) saves a lightweight snapshot of the conversation before context compression.
 
 4. **Extract** (session end): The SessionEnd hook launches a background ingestion process that parses the transcript, runs the encoding gate on each fact, and stores high-quality memories.
 
@@ -53,6 +53,7 @@ truememory/hooks/
 ├── adapters/
 │   ├── base.py          # CLIAdapter abstract base class
 │   ├── claude.py        # Wraps existing install logic
+│   ├── chatgpt.py       # ChatGPT Desktop MCP config
 │   ├── kimi.py          # TOML + JSON config
 │   ├── hermes.py        # YAML config
 │   └── openclaw.py      # JSON5 config + JS plugin

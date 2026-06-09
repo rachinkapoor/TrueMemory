@@ -16,6 +16,9 @@ truememory-ingest setup --cli kimi
 
 # Or add multiple at once
 truememory-ingest setup --cli kimi,hermes
+
+# Add ChatGPT Desktop
+truememory-ingest setup --cli chatgpt
 ```
 
 ## Removing a CLI

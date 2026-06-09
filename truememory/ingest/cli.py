@@ -82,7 +82,7 @@ def main():
     # --- setup command (first-time onboarding) ---
     p_setup = sub.add_parser("setup", help="Interactive first-time setup wizard")
     p_setup.add_argument("--non-interactive", action="store_true", help="Skip prompts, use defaults + env vars")
-    p_setup.add_argument("--cli", default="", help="Comma-separated CLI IDs to configure (e.g. claude,kimi,hermes)")
+    p_setup.add_argument("--cli", default="", help="Comma-separated CLI IDs to configure (e.g. claude,chatgpt,codex)")
 
     # --- upgrade-tier command ---
     p_upgrade = sub.add_parser("upgrade-tier", help="Switch embedding tier (edge/base/pro)")
