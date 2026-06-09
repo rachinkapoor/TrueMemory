@@ -4,14 +4,14 @@
 
 ```
 ┌─────────────┐  ┌──────────┐  ┌──────────────┐  ┌──────────┐
-│ Claude Code │  │ ChatGPT │  │ Kimi CLI │  │ Hermes Agent │
-└──────┬──────┘  └────┬────┘  └────┬─────┘  └──────┬───────┘
-       │              │            │               │
-       ▼              ▼            ▼               ▼
+│ Claude Code │  │ Kimi CLI │  │ Hermes Agent │  │ OpenClaw │
+└──────┬──────┘  └────┬─────┘  └──────┬───────┘  └────┬─────┘
+       │              │               │                │
+       ▼              ▼               ▼                ▼
 ┌──────────────────────────────────────────────────────────────┐
 │                    Hook Adapters                              │
-│  claude.py    chatgpt.py    kimi.py    hermes.py             │
-│  (JSON)       (JSON)        (TOML)      (YAML)               │
+│  claude.py    kimi.py    hermes.py    openclaw.py            │
+│  (JSON)       (TOML)     (YAML)       (JSON5+JS)            │
 └──────────────────────────┬───────────────────────────────────┘
                            │
                            ▼
@@ -53,7 +53,7 @@ truememory/hooks/
 ├── adapters/
 │   ├── base.py          # CLIAdapter abstract base class
 │   ├── claude.py        # Wraps existing install logic
-│   ├── chatgpt.py       # ChatGPT Desktop MCP config
+│   ├── chatgpt.py       # ChatGPT Desktop MCP config (experimental)
 │   ├── kimi.py          # TOML + JSON config
 │   ├── hermes.py        # YAML config
 │   └── openclaw.py      # JSON5 config + JS plugin

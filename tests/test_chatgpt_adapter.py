@@ -41,22 +41,24 @@ def test_chatgpt_implements_all_abstract_methods():
         assert hasattr(adapter, method_name), f"Missing: {method_name}"
 
 
-def test_detect_false_without_dir_or_config(tmp_path, monkeypatch):
+def test_detect_false_without_app(tmp_path, monkeypatch):
     from truememory.hooks.adapters import chatgpt as chatgpt_mod
     from truememory.hooks.adapters.chatgpt import ChatGPTAdapter
 
+    monkeypatch.setattr(chatgpt_mod, "_app_installed", lambda: False)
     monkeypatch.setattr(chatgpt_mod, "_CHATGPT_DIR", tmp_path / "missing")
     monkeypatch.setattr(chatgpt_mod, "_CONFIG_PATH", tmp_path / "missing" / "mcp.json")
 
     assert not ChatGPTAdapter().detect()
 
 
-def test_detect_true_with_dir(tmp_path, monkeypatch):
+def test_detect_true_with_app_installed(tmp_path, monkeypatch):
     from truememory.hooks.adapters import chatgpt as chatgpt_mod
     from truememory.hooks.adapters.chatgpt import ChatGPTAdapter
 
     chatgpt_dir = tmp_path / "com.openai.chat"
     chatgpt_dir.mkdir()
+    monkeypatch.setattr(chatgpt_mod, "_app_installed", lambda: True)
     monkeypatch.setattr(chatgpt_mod, "_CHATGPT_DIR", chatgpt_dir)
     monkeypatch.setattr(chatgpt_mod, "_CONFIG_PATH", chatgpt_dir / "mcp.json")
 
@@ -68,6 +70,7 @@ def test_install_mcp_creates_config(tmp_path, monkeypatch):
     from truememory.hooks.adapters.chatgpt import ChatGPTAdapter
 
     config_path = tmp_path / "mcp.json"
+    monkeypatch.setattr(chatgpt_mod, "_app_installed", lambda: True)
     monkeypatch.setattr(chatgpt_mod, "_CONFIG_PATH", config_path)
 
     ChatGPTAdapter().install_mcp(python_path="/usr/bin/python3")
@@ -86,6 +89,7 @@ def test_install_mcp_preserves_existing(tmp_path, monkeypatch):
         json.dumps({"mcpServers": {"other": {"command": "node", "args": ["server.js"]}}}),
         encoding="utf-8",
     )
+    monkeypatch.setattr(chatgpt_mod, "_app_installed", lambda: True)
     monkeypatch.setattr(chatgpt_mod, "_CONFIG_PATH", config_path)
 
     ChatGPTAdapter().install_mcp(python_path="/usr/bin/python3")
@@ -112,6 +116,7 @@ def test_verify_requires_mcp_entry(tmp_path, monkeypatch):
     from truememory.hooks.adapters.chatgpt import ChatGPTAdapter
 
     config_path = tmp_path / "mcp.json"
+    monkeypatch.setattr(chatgpt_mod, "_app_installed", lambda: True)
     monkeypatch.setattr(chatgpt_mod, "_CONFIG_PATH", config_path)
     adapter = ChatGPTAdapter()
 

@@ -17,7 +17,7 @@ truememory-ingest setup --cli kimi
 # Or add multiple at once
 truememory-ingest setup --cli kimi,hermes
 
-# Add ChatGPT Desktop
+# Add ChatGPT Desktop (experimental — ChatGPT does not yet load local MCP configs)
 truememory-ingest setup --cli chatgpt
 ```
 

@@ -61,7 +61,7 @@ Interactive first-time setup wizard. Guides through tier selection, API key entr
 ```bash
 truememory-ingest setup
 truememory-ingest setup --non-interactive    # use defaults + env vars
-truememory-ingest setup --cli chatgpt
+truememory-ingest setup --cli chatgpt   # experimental, see docs/setup-chatgpt.md
 ```
 
 ### upgrade-tier
