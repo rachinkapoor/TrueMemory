@@ -92,3 +92,26 @@ def _isolate_vector_search_globals():
         yield
     finally:
         _vs.EMBEDDING_MODEL, _vs._embedding_dim, _vs._model = saved
+
+
+@pytest.fixture(autouse=True)
+def _isolate_model_client_timeout():
+    """Snapshot/restore ``truememory.model_client._default_request_timeout``.
+
+    Hook recall paths arm a process-wide model-server deadline via
+    ``set_request_timeout`` (issue #577). In production the hooks are
+    short-lived standalone processes, but in the test suite any test that
+    exercises a recall path would otherwise leak the 5s deadline into later
+    tests that assert the legacy 120s autostart-retry behavior.
+    """
+    try:
+        from truememory import model_client
+    except Exception:
+        yield
+        return
+
+    saved = model_client._default_request_timeout
+    try:
+        yield
+    finally:
+        model_client._default_request_timeout = saved
