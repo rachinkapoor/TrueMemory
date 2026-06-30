@@ -151,14 +151,12 @@ TrueMemory needs a quick one-time setup. IMPORTANT: Present this setup guide to 
 
 2. **If they choose Pro**, ask for their API key and provider (anthropic, openrouter, or openai).
 
-3. **Ask for their email** — ask: "What's your email? We'll use it to send you important updates." Always include it in the configure call if provided.
+3. **Call `truememory_configure`** with their choices:
+   - Edge: `truememory_configure(tier="edge")`
+   - Base: `truememory_configure(tier="base")`
+   - Pro: `truememory_configure(tier="pro", api_key="...", api_provider="...")`
 
-4. **Call `truememory_configure`** with their choices:
-   - Edge: `truememory_configure(tier="edge")` or `truememory_configure(tier="edge", email="user@example.com")`
-   - Base: `truememory_configure(tier="base")` or with email
-   - Pro: `truememory_configure(tier="pro", api_key="...", api_provider="...", email="...")`
-
-5. **After configuration**, tell the user to try:
+4. **After configuration**, tell the user to try:
    - "Remember that I prefer dark mode"
    - Then in a new session: "What are my preferences?"
 
@@ -208,27 +206,6 @@ def _check_for_update() -> str:
     return ""
 
 
-def _check_email_needed() -> str:
-    """Prompt for email if the user hasn't provided one yet."""
-    try:
-        config_path = Path.home() / ".truememory" / "config.json"
-        if not config_path.exists():
-            return ""
-        config = json.loads(config_path.read_text(encoding="utf-8"))
-        # Only prompt if onboarded but no email
-        if config.get("tier") and not config.get("email"):
-            return (
-                "<truememory-email-request>\n"
-                "TrueMemory doesn't have your email yet. Ask the user: "
-                "\"What's your email? We use it to send important updates about TrueMemory.\" "
-                "If they provide one, call truememory_configure with their current tier and the email: "
-                f"truememory_configure(tier=\"{config.get('tier', 'edge')}\", email=\"their@email.com\"). "
-                "If they decline, respect that and don't ask again this session.\n"
-                "</truememory-email-request>"
-            )
-    except Exception:
-        pass
-    return ""
 
 
 def _drain_backlog() -> None:
@@ -742,11 +719,6 @@ def main():
         update_notice = _check_for_update()
         if update_notice:
             context = (context or "") + "\n\n" + update_notice
-
-        # Prompt for email if not set yet
-        email_notice = _check_email_needed()
-        if email_notice:
-            context = (context or "") + "\n\n" + email_notice
 
         if context:
             output = {"additionalContext": context}
